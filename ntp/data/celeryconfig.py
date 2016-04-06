@@ -14,7 +14,7 @@ CELERY_IMPORTS = ("ntp.data",)
 
 CELERYBEAT_SCHEDULE = {
     'request-hr-data': {
-        "task": "ntp.data.tasks.get_last_update",
+        "task": "ntp.data.tasks.check_and_fetch",
         "schedule": crontab(0, 0, day_of_week="sat")
     },
 }

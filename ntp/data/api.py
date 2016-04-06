@@ -3,6 +3,7 @@ Primary python API for interacting with the data from the open data portal.  The
 to be tested.
 """
 import requests
+import time
 
 
 def write_csv(path, json_like, fieldnames=None, delimiter=","):
@@ -74,3 +75,30 @@ def ntp_last_update():
         for f in os.listdir(input_path)
         if os.path.isfile(os.path.join(input_path, f))]
     return max(onlyfiles).strftime('%s')
+
+
+def write_data(data, odp_time):
+    """
+    Write data to file with name based on time.
+    :param data:
+    :param odp_time:
+    :return:
+    """
+    file_name = time.strftime('%Y%m%d', time.localtime(odp_time))
+    full_file_path = 'ntp/files/input/{0}.csv'.format(file_name)
+    write_csv(
+        path=full_file_path,
+        json_like=data)
+
+
+def check_load_data():
+    """
+    Main function
+    :return:
+    """
+    odp_last_updated = check_for_update()
+    ntp_last_updated = ntp_last_update()
+    if should_update(ntp_last_updated=ntp_last_updated, odp_last_updated=odp_last_updated):
+        write_data(data=retrieve_data(), odp_time=odp_last_updated)
+    else:
+        pass
